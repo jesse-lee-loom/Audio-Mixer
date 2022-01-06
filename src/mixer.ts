@@ -69,7 +69,7 @@ export class Mixer extends Readable {
             this.inputs.forEach((input) => {
                 if (input.hasData) {
                     let inputBuffer = this.args.channels === 1 ? input.readMono(samples) : input.readStereo(samples);
-                    const maxOffset = inputBuffer.size;
+                    const maxOffset = inputBuffer.length;
                     for (let i = 0; i < samples * this.args.channels; i++) {
                         const offset = i * this.sampleByteLength;
                         if( maxOffset <= offset ){

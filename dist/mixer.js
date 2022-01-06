@@ -39,8 +39,13 @@ class Mixer extends stream_1.Readable {
             this.inputs.forEach((input) => {
                 if (input.hasData) {
                     let inputBuffer = this.args.channels === 1 ? input.readMono(samples) : input.readStereo(samples);
+                    const maxOffset = inputBuffer.length;
                     for (let i = 0; i < samples * this.args.channels; i++) {
-                        let sample = this.readSample.call(mixedBuffer, i * this.sampleByteLength) + Math.floor(this.readSample.call(inputBuffer, i * this.sampleByteLength) / this.inputs.length);
+                        const offset = i * this.sampleByteLength;
+                        if (maxOffset <= offset) {
+                            break;
+                        }
+                        let sample = this.readSample.call(mixedBuffer, offset) + Math.floor(this.readSample.call(inputBuffer, offset) / this.inputs.length);
                         this.writeSample.call(mixedBuffer, sample, i * this.sampleByteLength);
                     }
                 }
